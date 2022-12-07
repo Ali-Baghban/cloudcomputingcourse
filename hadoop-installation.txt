@@ -1,0 +1,64 @@
+# sudo su
+# apt update
+# apt install openjdk-8-jdk -y
+
+# wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz
+
+# tar -xzvf hadoop-3.3.4.tar.gz
+# mv hadoop-3.3.4 /usr/local/hadoop
+
+# nano /etc/environment 
+update with adding after other pathes >> ":/usr/local/hadoop/bin:/usr/local/hadoop/sbin"
+add this line under the " >> JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+--------------------------------------------
+Do these steps for master and workers:
+
+# adduser hadoop
+# usermod -aG hadoop hadoop
+# chown hadoop:root -R /usr/local/hadoop
+# chmod g+rwx -R /usr/local/hadoop
+--------------------------------------------
+Do these steps only for master: 
+
+# su - hadoop
+# ssh-keygen -t rsa 
+# cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+# chmod og-wx ~/.ssh/authorized_keys
+# su - hadoop
+$ ssh-copy-id hadoop@slave1
+$ ssh-copy-id hadoop@slave2
+
+-------------------------------------------
+Do these steps for master and workers:
+
+# nano  /usr/local/hadoop/etc/hadoop/core-site.xml
+open and add:
+<configuration>
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://master:9000</value>
+  </property>
+</configuration>
+-----
+# nano /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+open and add:
+<configuration>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>/usr/local/hadoop/data/nameNode</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/usr/local/hadoop/data/dataNode</value>
+  </property>
+  <property>
+    <name>dfs.replication</name>
+    <value>2</value>
+  </property>
+</configuration>
+-----
+# nano /usr/local/hadoop/etc/hadoop/workers
+open and add:
+slave1
+slave2
+-------------------------------------------
