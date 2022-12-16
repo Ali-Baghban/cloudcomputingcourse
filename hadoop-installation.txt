@@ -65,3 +65,6 @@ open and add:
 slave1
 slave2
 -------------------------------------------
+Extra conf. for compiling java (Mapreduce) code
+
+# export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
