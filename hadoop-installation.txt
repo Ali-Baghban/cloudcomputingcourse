@@ -43,27 +43,114 @@ open and add:
   </property>
 </configuration>
 -----
+for Master:
 # nano /usr/local/hadoop/etc/hadoop/hdfs-site.xml
 open and add:
+
 <configuration>
   <property>
     <name>dfs.namenode.name.dir</name>
     <value>/usr/local/hadoop/data/nameNode</value>
   </property>
   <property>
-    <name>dfs.datanode.data.dir</name>
-    <value>/usr/local/hadoop/data/dataNode</value>
+    <name>dfs.hosts</name>
+    <value>slave1,slave2</value>
   </property>
   <property>
     <name>dfs.replication</name>
-    <value>2</value>
+    <value>1</value>
   </property>
 </configuration>
 -----
+for Workers:
+# nano /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+open and add:
+
+<configuration>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/usr/local/hadoop/data/dataNode</value>
+  </property>
+</configuration>
+-------
+for Master:
+# nano /usr/local/hadoop/etc/hadoop/yarn-site.xml
+open and add:
+
+<configuration>
+<property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>1536</value>
+</property>
+<property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>1536</value>
+</property>
+<property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+    <value>128</value>
+</property>
+<property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>false</value>
+</property>
+
+<property>
+    <name>yarn.resourcemanager.address</name>
+    <value>http://master:8032</value>
+</property>
+<property>
+        <name>yarn.nodemanager.remote-app-log-dir</name>
+        <value>/usr/local/hadoop/logs/</value>
+</property>
+</configuration>
+-----
+for Workers:
+# nano /usr/local/hadoop/etc/hadoop/yarn-site.xml
+open and add:
+
+<configuration>
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value>http://master:8032</value>
+  </property>
+   <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>master</value>
+  </property>
+</configuration>
+-----
+for Master only:
+# nano /usr/local/hadoop/etc/hadoop/mapred-site.xml
+open and add:
+
+<configuration>
+        <property>
+                <name>mapreduce.jobhistory.address</name>
+                <value>http://master:10020</value>
+        </property>
+        <property>
+                <name>mapreduce.jobhistory.webapp.address</name>
+                <value>http://master:19888</value>
+        </property>
+        <property>
+                <name>mapreduce.jobhistory.intermediate-done-dir</name>
+                <value>/usr/local/hadoop/data/mr-history/tmp</value>
+        </property>
+        <property>
+                <name>mapreduce.jobhistory.done-dir</name>
+                <value>/usr/local/hadoop/data/mr-history/done</value>
+        </property>
+
+</configuration>
+-----
+for Master and Workers:
 # nano /usr/local/hadoop/etc/hadoop/workers
 open and add:
+
 slave1
 slave2
+-------------------------------------------
 -------------------------------------------
 Extra conf. for compiling java (Mapreduce) code
 
